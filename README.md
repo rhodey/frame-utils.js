@@ -12,7 +12,7 @@ Usage print-frames.js
 ---------------------------
 Transforms a stream of newline separated, base64 encoded 80211 frames with radiotap headers into a
 stream of comma-separated values. All non-separating commas are doubly escaped (`\\,`) and the
-base64 encoded frame may optionally be prefixed by plain-text comma-separated values given that
+base64 encoded frames may optionally be prefixed by plain-text comma-separated values given that
 they are also doubly escaped.  
   
 Examples:  
