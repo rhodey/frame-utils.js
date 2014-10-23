@@ -4,7 +4,6 @@ var through = require('through');
 
 var RADIO_TAP_LENGTH = 32;
 
-
 // TODO: this is still modeled after "rxinfo" from airserv-ng
 function RadioTapHeader(data) {
   if (data.length != 32)
@@ -42,13 +41,13 @@ RadioTapHeader.prototype.getAntenna = function() {
 }
 
 RadioTapHeader.prototype.toString = function() {
-  return 'mac time: '    + this.getMacTime()   +
-         ', power: '     + this.getPower()     +
-         ', noise: '     + this.getNoise()     +
-         ', channel: '   + this.getChannel()   +
-         ', freq: '      + this.getFrequency() +
-         ', rate: '      + this.getRate()      +
-         ', antenna: '   + this.getAntenna();
+  return 'mac_time:' + this.getMacTime()   +
+         ',power:'   + this.getPower()     +
+         ',noise:'   + this.getNoise()     +
+         ',channel:' + this.getChannel()   +
+         ',freq:'    + this.getFrequency() +
+         ',rate:'    + this.getRate()      +
+         ',antenna:' + this.getAntenna();
 }
 
 function CapturedFrame(data) {
@@ -64,7 +63,7 @@ CapturedFrame.prototype.getFrame = function() {
 }
 
 CapturedFrame.prototype.toString = function() {
-  return this.getRadioTapHeader().toString() + ', ' + this.getFrame().toString();
+  return this.getRadioTapHeader().toString() + ',' + this.getFrame().toString();
 }
 
 

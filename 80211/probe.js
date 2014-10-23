@@ -25,7 +25,7 @@ ProbeRequest.prototype.getSupportedRates = function() {
 }
 
 ProbeRequest.prototype.toString = function() {
-  return 'ssid: ' + this.getSsid().toString();
+  return 'ssid:' + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 // TODO: check here if this.data is of acceptable length
@@ -82,8 +82,8 @@ ProbeResponse.prototype.getIbbsSet = function() {
 }
 
 ProbeResponse.prototype.toString = function() {
-  return 'timestamp: ' + this.getTimeStamp().toString('hex') +
-         ', ssid: '    + this.getSsid().toString();
+  return 'pr_timestamp:' + this.getTimeStamp().toString('hex') +
+         ',ssid:'        + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 ProbeResponse.mixin = function(destObject){

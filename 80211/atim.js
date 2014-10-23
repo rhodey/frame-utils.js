@@ -4,7 +4,7 @@ function Atim(data) {
 };
 
 Atim.prototype.toString = function() {
-  return 'idk: atim has no body?'
+  return 'idk:atim has no body?'
 }
 
 Atim.mixin = function(destObject){

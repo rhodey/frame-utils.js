@@ -37,8 +37,8 @@ ReassociationRequest.prototype.getSupportedRates = function() {
 }
 
 ReassociationRequest.prototype.toString = function() {
-  return 'current ap: ' + this.getCurrentApAddress().toString('hex') +
-         ', ssid: '     + this.getSsid().toString();
+  return 'current_ap:' + this.getCurrentApAddress().toString('hex') +
+         ',ssid:'      + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 ReassociationRequest.mixin = function(destObject){
@@ -76,8 +76,8 @@ ReassociationResponse.prototype.getSupportedRates = function() {
 }
 
 ReassociationResponse.prototype.toString = function() {
-  return 'status: '           + this.getStatus().toString('hex') +
-         ', association id: ' + this.getAssociationId().toString('hex');
+  return 'status:'          + this.getStatus().toString('hex') +
+         ',association id:' + this.getAssociationId().toString('hex');
 }
 
 ReassociationResponse.mixin = function(destObject){

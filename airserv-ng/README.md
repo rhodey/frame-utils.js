@@ -44,6 +44,7 @@ commands:
 Usage read-frames.js
 ---------------------------
 Provides a newline separated stream of base64 encoded 80211 frames with radiotap headers.  
+  
 `node read-frames.js <ip-address>:<port> <channels> <interval>`
   + \<ip-address\> ip of the airserv-ng server (likely 127.0.0.1)
   + \<port\> port of the airserv-ng server (666 by default)
@@ -52,7 +53,6 @@ Provides a newline separated stream of base64 encoded 80211 frames with radiotap
 
 License
 ---------------------------
-
 Copyright 2014 rhodey orbits  
 
 Licensed under GPLv3: http://www.gnu.org/licenses/gpl-3.0.html

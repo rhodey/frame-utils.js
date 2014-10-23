@@ -27,8 +27,8 @@ Authentication.prototype.getChallenge = function() {
 }
 
 Authentication.prototype.toString = function() {
-  return 'status: '           + this.getStatus().toString('hex') +
-         ', association id: ' + this.getAssociationId().toString('hex');
+  return 'status:'          + this.getStatus().toString('hex') +
+         ',association id:' + this.getAssociationId().toString('hex');
 }
 
 Authentication.mixin = function(destObject){
@@ -50,7 +50,7 @@ Deauthentication.prototype.getReason = function() {
 }
 
 Deauthentication.prototype.toString = function() {
-  return 'reason: ' + this.getReason().toString('hex');
+  return 'reason:' + this.getReason().toString('hex');
 }
 
 Deauthentication.mixin = function(destObject){

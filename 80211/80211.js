@@ -218,10 +218,10 @@ function getSubTypeSymbol(type, subType) {
 }
 
 MacHeader.prototype.toString = function() {
-  return 'subtype: '       + getSubTypeSymbol(this.getType(), this.getSubType()) +
-         ', source: '      + util.getFormattedMacAddress(this.getSource())       +
-         ', destination: ' + util.getFormattedMacAddress(this.getDestination())  +
-         ', bssid: '       + util.getFormattedMacAddress(this.getBssid());
+  return 'subtype:'  + getSubTypeSymbol(this.getType(), this.getSubType()) +
+         ',srcaddr:' + util.getFormattedMacAddress(this.getSource())       +
+         ',dstaddr:' + util.getFormattedMacAddress(this.getDestination())  +
+         ',bssid:'   + util.getFormattedMacAddress(this.getBssid());
 }
 
 function FrameBody(type, subType, data) {
@@ -315,7 +315,7 @@ function Frame(data) {
 };
 
 Frame.prototype.toString = function() {
-  return this.header.toString() + ', ' + this.body.toString() + ', fcs: ' + this.fcs.toString('hex');
+  return this.header.toString() + ',' + this.body.toString() + ',fcs:' + this.fcs.toString('hex');
 }
 
 

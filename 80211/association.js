@@ -33,7 +33,7 @@ AssociationRequest.prototype.getSupportedRates = function() {
 }
 
 AssociationRequest.prototype.toString = function() {
-  return 'ssid: ' + this.getSsid().toString();
+  return 'ssid:' + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 AssociationRequest.mixin = function(destObject){
@@ -71,8 +71,8 @@ AssociationResponse.prototype.getSupportedRates = function() {
 }
 
 AssociationResponse.prototype.toString = function() {
-  return 'status: '           + this.getStatus().toString('hex') +
-         ', association id: ' + this.getAssociationId().toString('hex');
+  return 'status:'          + this.getStatus().toString('hex') +
+         ',association_id:' + this.getAssociationId().toString('hex');
 }
 
 AssociationResponse.mixin = function(destObject){
@@ -94,7 +94,7 @@ Disassociation.prototype.getReason = function() {
 }
 
 Disassociation.prototype.toString = function() {
-  return 'reason: ' + this.getReason().toString('hex');
+  return 'reason:' + this.getReason().toString('hex');
 }
 
 Disassociation.mixin = function(destObject){

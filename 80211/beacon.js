@@ -57,8 +57,8 @@ Beacon.prototype.getTim = function() {
 }
 
 Beacon.prototype.toString = function() {
-  return 'timestamp: ' + this.getTimeStamp().toString('hex') +
-         ', ssid: '    + this.getSsid().toString();
+  return 'b_timestamp:' + this.getTimeStamp().toString('hex') +
+         ',ssid:'       + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 Beacon.mixin = function(destObject){

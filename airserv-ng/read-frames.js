@@ -90,5 +90,5 @@ airservClient.connect(process.argv[2].split(':')[1], process.argv[2].split(':')[
 
 airservClient.on('end', function() {
   process.stderr.write('airserv-ng client disconnected\n');
-  process.exit(0);
+  process.exit(1);
 });
