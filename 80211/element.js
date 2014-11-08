@@ -1,3 +1,27 @@
+/*
+ * management frame information elements...
+ *   ssid:?              - network name 0-32 bytes in length, usually a null-terminated ASCII string.
+ *   supported rates:?   - list of supported rates, one byte per rate, TODO: enum rate labels.
+ *   fh set:7B           - used by frequency-hopping networks.
+ *     dwell time:2B     - amount of time spent on each channel measured in TUs.
+ *     hop set:1B        - hop patterns to be used as defined by 80211 frequency-hopping PHY.
+ *     hop pattern:1B    - which pattern in the hop set is being used.
+ *     hop index:1B      - the current point in the hop pattern.
+ *   ds set:3B           - used by direct seq networks, contains only the channel number.
+ *   tim:?               - details which stations have buffered traffic waiting to be picked up.
+ *     dtim count:1B     - number of beacons that will be transmitted before next DTIM frame.
+ *     dtim period:1B    - number of beacon intervals between DTIM frames.
+ *     bitmap control:1B - used to help processing of the partial virtual bitmap.
+ *     partial bitmap:?  - one bit per association ID, if bit set then traffic is buffered.
+ *   cf set:8B           - used by networks supporting contention-free service (point coordination function).
+ *     cfp count:1B      - number of DTIM frames that will be transmitted before next contention-free period.
+ *     cfp period:1B     - number of DTIM intervals between start of contention-free periods.
+ *     cfp max dur:2B    - maximum duration of the contention-free period measued in TUs.
+ *     cfp dur remain:2B - number of TUs reamining in the current contention-free period.
+ *   ibss set:4B         - number of TUs between ATIM frames.
+ *   challenge text:?    - encrypted challenge text for shared-key auth.
+ */
+
 var element_id = {
   SSID                        : 0x00,
   SUPPORTED_RATES             : 0X01,

@@ -2,7 +2,17 @@ var InformationElement = require('./element').InformationElement;
 var element_id         = require('./element').element_id;
 var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
 
-// [timestamp:8] [between interval:2] [capability:2] [ssid:?] [fh set:7] [ds set:2] [cf set:8] [ibss set:4] [tim:?]
+/*
+ * [timestamp:8] [beacon interval:2] [capability:2] [ssid:?] [fh set:7] [ds set:2] [cf set:8] [ibss set:4] [tim:?]
+ *
+ * FH   set only present when frequency-hopping is supported.
+ * DS   set only present when direct sequence is supported.
+ * CF   set only present when AP supports PCF.
+ * IBSS set only present in IBSS networks.
+ * TIM      only present when beacon is from an APs.
+ *
+ * FH and DS are mutially exclusive.
+ */
 function Beacon(data) {
   this.data = data;
 };
@@ -11,7 +21,7 @@ Beacon.prototype.getTimeStamp = function() {
   return this.data.slice(0, 8);
 }
 
-Beacon.prototype.getBetweenInterval = function() {
+Beacon.prototype.getBeaconInterval = function() {
   return this.data.slice(8, 10);
 }
 

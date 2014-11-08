@@ -1,7 +1,7 @@
 80211.js
 ==========
 
-A collection of 80211 frame types and information element definitions.
+A collection of 80211 primitives.
 
 License
 ---------------------------

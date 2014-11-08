@@ -1,3 +1,9 @@
+/*
+ * some vocab...
+ *   BSS  - infrastructure networks, have one or more APs.
+ *   IBSS - independent networks, direct communication between stations, no APs.
+ */
+
 var util                  = require('../util.js');
 var AssociationRequest    = require('./association.js').AssociationRequest;
 var AssociationResponse   = require('./association.js').AssociationResponse;

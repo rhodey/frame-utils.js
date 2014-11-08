@@ -36,7 +36,16 @@ ProbeRequest.mixin = function(destObject){
 };
 
 
-// [timestamp:8] [between interval:2] [capability:2] [ssid:?] [fh set:7] [ds set:2] [cf set:8] [ibss set:4]
+/*
+ * [timestamp:8] [between interval:2] [capability:2] [ssid:?] [fh set:7] [ds set:2] [cf set:8] [ibss set:4]
+ *
+ * FH   set only present when frequency-hopping is supported.
+ * DS   set only present when direct sequence is supported.
+ * IBSS set only present in IBSS networks.
+ * CF   set only present when AP supports PCF.
+ *
+ * FH and DS are mutially exclusive.
+ */
 function ProbeResponse(data) {
   this.data = data;
 };

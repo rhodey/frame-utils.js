@@ -1,5 +1,5 @@
 function handleShowUsage() {
-  process.stderr.write('node airserv-frames.js <ip-address>:<port> <channels> <interval>\n');
+  process.stderr.write('node stream-frames.js <ip-address>:<port> <channels> <interval>\n');
 }
 
 if (process.argv.length < 5|| process.argv[2].split(':').length != 2) {
@@ -9,6 +9,7 @@ if (process.argv.length < 5|| process.argv[2].split(':').length != 2) {
 
 var airserv_api = require('./airserv_api.js');
 var util        = require('../util.js');
+var split       = require('split');
 var through     = require('through');
 var net         = require('net');
 var Readable    = require('stream').Readable;
@@ -48,7 +49,6 @@ function handleScanChannels(channelSpace) {
     channelJumpTimer = setInterval(function () { handleScanChannels(channelSpace) }, jumpInterval);
 };
 
-
 function handleStreamErrror(err) {
   process.stderr.write('caught error in stream: ' + err.stack + '\n');
 }
@@ -81,7 +81,16 @@ function decodeFrames() {
 airservClient.connect(process.argv[2].split(':')[1], process.argv[2].split(':')[0], function() {
   util.getChannelSpaceForArg(process.argv[3], handleScanChannels);
 
-  commandStream.pipe(airservClient)
+   process.stdin.pipe(split())
+    .pipe(through(
+      function write(response) {
+        commandStream.queue(
+          new airserv_api.Command(airserv_api.commands.WRITE, new Buffer(response, 'base64'))
+        );
+      }
+    ))
+    .pipe(commandStream)
+    .pipe(airservClient)
     .pipe(airserv_api.splitResponses(handleStreamErrror))
     .pipe(decodeFrames())
     .pipe(process.stdout);
