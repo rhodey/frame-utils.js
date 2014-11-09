@@ -6,6 +6,10 @@ function Authentication(data) {
   this.data = data;
 };
 
+Authentication.prototype.initElements = function() {
+  this.elements = InformationElement.getElementArray(this.data.slice(6));
+}
+
 Authentication.prototype.getAlgorithm = function() {
   return this.data.slice(0, 2);
 }
@@ -19,11 +23,7 @@ Authentication.prototype.getStatus = function() {
 }
 
 Authentication.prototype.getChallenge = function() {
-  var element = new InformationElement(this.data.slice(6));
-  if (element.getId() != element_id.CHALLEGE_TEXT)
-    throw new Error('bad element id, expected ' + element_id.CHALLEGE_TEXT + ' have ' + element.getId());
-
-  return element.getValue();
+  return this.elements[element_id.CHALLEGE_TEXT];
 }
 
 Authentication.prototype.toString = function() {
@@ -33,7 +33,7 @@ Authentication.prototype.toString = function() {
 
 Authentication.mixin = function(destObject){
   ['getAlgorithm', 'getTransactionSequence', 'getStatus', 'getChallenge',
-   'toString']
+   'toString',     'initElements']
   .forEach(function(property) {
     destObject.prototype[property] = Authentication.prototype[property];
   });

@@ -3,7 +3,7 @@ var element_id         = require('./element').element_id;
 var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
 
 /*
- * [timestamp:8] [beacon interval:2] [capability:2] [ssid:?] [fh set:7] [ds set:2] [cf set:8] [ibss set:4] [tim:?]
+ * [timestamp:8] [beacon interval:2] [capability:2] [ssid:IE] [fh set:IE] [ds set:IE] [cf set:IE] [ibss set:IE] [tim:IE]
  *
  * FH   set only present when frequency-hopping is supported.
  * DS   set only present when direct sequence is supported.
@@ -16,6 +16,10 @@ var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
 function Beacon(data) {
   this.data = data;
 };
+
+Beacon.prototype.initElements = function() {
+  this.elements = InformationElement.getElementArray(this.data.slice(12));
+}
 
 Beacon.prototype.getTimeStamp = function() {
   return this.data.slice(0, 8);
@@ -30,86 +34,30 @@ Beacon.prototype.getCapability = function() {
 }
 
 Beacon.prototype.getSsid = function() {
-  var element = new InformationElement(this.data.slice(12));
-  if (element.getId() != element_id.SSID)
-    throw new Error('bad element id, expected ' + element_id.SSID + ' have ' + element.getId());
-
-  return element.getValue();
+  if (this.elements[element_id.SSID] === undefined)
+    return '';
+  else
+    return this.elements[element_id.SSID];
 }
 
 Beacon.prototype.getFhSet = function() {
-  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  var element = new InformationElement(this.data.slice(offset));
-  if (element.getId() != element_id.FH_SET)
-    throw new Error('bad element id, expected ' + element_id.FH_SET + ' have ' + element.getId());
-
-  return element.getValue();
+  return this.elements[element_id.FH_SET];
 }
 
 Beacon.prototype.getDsSet = function() {
-  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  var element = new InformationElement(this.data.slice(offset));
-  if (element.getId() != element_id.DS_SET)
-    throw new Error('bad element id, expected ' + element_id.DS_SET + ' have ' + element.getId());
-
-  return element.getValue();
+  return this.elements[element_id.DS_SET];
 }
 
-// TODO
 Beacon.prototype.getCfSet = function() {
-  throw new Error('this is weird and not currently supported.');
+  return this.elements[element_id.CF_SET];
 }
 
 Beacon.prototype.getIbssSet = function() {
-  var offset      = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  var fhSetLength = 0;
-  var dsSetLength = 0;
-  var cfSetLength = 0;
-
-  try {
-    fhSetLength = IE_HEADER_LENGTH + this.getFhSet().length;
-  } catch (err) {}
-  try {
-    dsSetLength = IE_HEADER_LENGTH + this.getDsSet().length;
-  } catch (err) {}
-  try {
-    cfSetLength = IE_HEADER_LENGTH + this.getCfSet().length;
-  } catch (err) {}
-
-      offset  = offset + fhSetLength + dsSetLength + cfSetLength;
-  var element = new InformationElement(this.data.slice(offset));
-  if (element.getId() != element_id.IBSS_SET)
-    throw new Error('bad element id, expected ' + element_id.IBSS_SET + ' have ' + element.getId());
-
-  return new element.getValue();
+  return this.elements[element_id.IBSS_SET];
 }
 
 Beacon.prototype.getTim = function() {
-  var offset        = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  var fhSetLength   = 0;
-  var dsSetLength   = 0;
-  var cfSetLength   = 0;
-  var ibssSetLength = 0;
-
-  try {
-    fhSetLength = IE_HEADER_LENGTH + this.getFhSet().length;
-  } catch (err) {}
-  try {
-    dsSetLength = IE_HEADER_LENGTH + this.getDsSet().length;
-  } catch (err) {}
-  try {
-    cfSetLength = IE_HEADER_LENGTH + this.getCfSet().length;
-  } catch (err) {}
-  try {
-    ibssSetLength = IE_HEADER_LENGTH + this.getIbssSet().length;
-  } catch (err) {}
-
-      offset  = offset + fhSetLength + dsSetLength + cfSetLength + ibssSetLength;
-  var element = new InformationElement(this.data.slice(offset));
-  if (element.getId() != element_id.TIM)
-    throw new Error('bad element id, expected ' + element_id.TIM + ' have ' + element.getId());
-
-  return new element.getValue();
+  return this.elements[element_id.TIM];
 }
 
 Beacon.prototype.toString = function() {
@@ -120,7 +68,7 @@ Beacon.prototype.toString = function() {
 Beacon.mixin = function(destObject){
   ['getTimeStamp', 'getBetweenInterval', 'getCapability', 'getSsid',
    'getFhSet',     'getDsSet',           'getCfSet',      'getIbssSet',
-   'getTim',       'toString']
+   'getTim',       'toString',           'initElements']
   .forEach(function(property) {
     destObject.prototype[property] = Beacon.prototype[property];
   });

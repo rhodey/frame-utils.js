@@ -318,6 +318,9 @@ function Frame(data) {
     data.slice(headerLength, (data.length - 4))
   );
   this.fcs = data.slice(data.length - 4);
+
+  if (this.body.initElements != undefined)
+    this.body.initElements();
 };
 
 Frame.prototype.toString = function() {

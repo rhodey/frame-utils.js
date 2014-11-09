@@ -73,6 +73,40 @@ InformationElement.prototype.getValue = function() {
   );
 }
 
+function buildElementArray(data, start, elements) {
+  if (start + 2 >= data.length)
+    return;
+
+  var elementId   = data[start];
+  var valueLength = data[start + 1];
+
+  if ((start + 1 + valueLength) >= data.length) {
+    // TODO: should throw error or something :/
+    return;
+  }
+
+  if (valueLength === 0) {
+    elements[elementId] = undefined;
+    buildElementArray(data, start + 2, elements);
+  }
+  else {
+    var valueStart = start + 2;
+    var valueEnd   = valueStart + valueLength;
+
+    elements[elementId] = data.slice(valueStart, valueEnd);
+    buildElementArray(data, valueEnd, elements);
+  }
+}
+
+// assumes that data contains only information elements
+InformationElement.getElementArray = function(data) {
+  var elements = new Array();
+  if (data.length < 3)
+    return elements;
+
+  buildElementArray(data, 0, elements);
+  return elements;
+}
 
 exports.element_id         = element_id;
 exports.InformationElement = InformationElement;
