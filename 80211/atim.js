@@ -1,4 +1,4 @@
-// atim frame... has no body?
+// atim frame has no body? TODO: understand this...
 function Atim(data) {
   this.data = data;
 };

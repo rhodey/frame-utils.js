@@ -71,23 +71,50 @@ ProbeResponse.prototype.getSsid = function() {
 }
 
 ProbeResponse.prototype.getFhSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  return this.data.slice(offset, offset + 7);
+  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.FH_SET)
+    throw new Error('bad element id, expected ' + element_id.FH_SET + ' have ' + element.getId());
+
+  return element.getValue();
 }
 
 ProbeResponse.prototype.getDsSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + this.getSsid().length;
-  return this.data.slice(offset, offset + 2);
+  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.DS_SET)
+    throw new Error('bad element id, expected ' + element_id.DS_SET + ' have ' + element.getId());
+
+  return element.getValue();
 }
 
+// TODO
 ProbeResponse.prototype.getCfSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + 2 + this.getSsid().length;
-  return this.data.slice(offset, offset + 8);
+  throw new Error('this is weird and not currently supported.');
 }
 
-ProbeResponse.prototype.getIbbsSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + 2 + 8 + this.getSsid().length;
-  return this.data.slice(offset, offset + 4);
+ProbeResponse.prototype.getIbssSet = function() {
+  var offset      = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var fhSetLength = 0;
+  var dsSetLength = 0;
+  var cfSetLength = 0;
+
+  try {
+    fhSetLength = IE_HEADER_LENGTH + this.getFhSet().length;
+  } catch (err) {}
+  try {
+    dsSetLength = IE_HEADER_LENGTH + this.getDsSet().length;
+  } catch (err) {}
+  try {
+    cfSetLength = IE_HEADER_LENGTH + this.getCfSet().length;
+  } catch (err) {}
+
+      offset  = offset + fhSetLength + dsSetLength + cfSetLength;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.IBSS_SET)
+    throw new Error('bad element id, expected ' + element_id.IBSS_SET + ' have ' + element.getId());
+
+  return new element.getValue();
 }
 
 ProbeResponse.prototype.toString = function() {
@@ -97,7 +124,7 @@ ProbeResponse.prototype.toString = function() {
 
 ProbeResponse.mixin = function(destObject){
   ['getTimeStamp', 'getBetweenInterval', 'getCapability', 'getSsid',
-   'getFhSet',     'getDsSet',           'getCfSet',      'getIbbsSet',
+   'getFhSet',     'getDsSet',           'getCfSet',      'getIbssSet',
    'toString']
   .forEach(function(property) {
     destObject.prototype[property] = ProbeResponse.prototype[property];

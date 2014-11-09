@@ -38,27 +38,73 @@ Beacon.prototype.getSsid = function() {
 }
 
 Beacon.prototype.getFhSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + this.getSsid().length;
-  return this.data.slice(offset, offset + 7);
+  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.FH_SET)
+    throw new Error('bad element id, expected ' + element_id.FH_SET + ' have ' + element.getId());
+
+  return element.getValue();
 }
 
 Beacon.prototype.getDsSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + this.getSsid().length;
-  return this.data.slice(offset, offset + 2);
+  var offset  = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.DS_SET)
+    throw new Error('bad element id, expected ' + element_id.DS_SET + ' have ' + element.getId());
+
+  return element.getValue();
 }
 
+// TODO
 Beacon.prototype.getCfSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + 2 + this.getSsid().length;
-  return this.data.slice(offset, offset + 8);
+  throw new Error('this is weird and not currently supported.');
 }
 
-Beacon.prototype.getIbbsSet = function() {
-  var offset = 12 + IE_HEADER_LENGTH + 7 + 2 + 8 + this.getSsid().length;
-  return this.data.slice(offset, offset + 4);
+Beacon.prototype.getIbssSet = function() {
+  var offset      = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var fhSetLength = 0;
+  var dsSetLength = 0;
+  var cfSetLength = 0;
+
+  try {
+    fhSetLength = IE_HEADER_LENGTH + this.getFhSet().length;
+  } catch (err) {}
+  try {
+    dsSetLength = IE_HEADER_LENGTH + this.getDsSet().length;
+  } catch (err) {}
+  try {
+    cfSetLength = IE_HEADER_LENGTH + this.getCfSet().length;
+  } catch (err) {}
+
+      offset  = offset + fhSetLength + dsSetLength + cfSetLength;
+  var element = new InformationElement(this.data.slice(offset));
+  if (element.getId() != element_id.IBSS_SET)
+    throw new Error('bad element id, expected ' + element_id.IBSS_SET + ' have ' + element.getId());
+
+  return new element.getValue();
 }
 
 Beacon.prototype.getTim = function() {
-  var offset  = 12 + IE_HEADER_LENGTH + 7 + 2 + 8 + 4 + this.getSsid().length;
+  var offset        = 12 + IE_HEADER_LENGTH + this.getSsid().length;
+  var fhSetLength   = 0;
+  var dsSetLength   = 0;
+  var cfSetLength   = 0;
+  var ibssSetLength = 0;
+
+  try {
+    fhSetLength = IE_HEADER_LENGTH + this.getFhSet().length;
+  } catch (err) {}
+  try {
+    dsSetLength = IE_HEADER_LENGTH + this.getDsSet().length;
+  } catch (err) {}
+  try {
+    cfSetLength = IE_HEADER_LENGTH + this.getCfSet().length;
+  } catch (err) {}
+  try {
+    ibssSetLength = IE_HEADER_LENGTH + this.getIbssSet().length;
+  } catch (err) {}
+
+      offset  = offset + fhSetLength + dsSetLength + cfSetLength + ibssSetLength;
   var element = new InformationElement(this.data.slice(offset));
   if (element.getId() != element_id.TIM)
     throw new Error('bad element id, expected ' + element_id.TIM + ' have ' + element.getId());
@@ -73,7 +119,7 @@ Beacon.prototype.toString = function() {
 
 Beacon.mixin = function(destObject){
   ['getTimeStamp', 'getBetweenInterval', 'getCapability', 'getSsid',
-   'getFhSet',     'getDsSet',           'getCfSet',      'getIbbsSet',
+   'getFhSet',     'getDsSet',           'getCfSet',      'getIbssSet',
    'getTim',       'toString']
   .forEach(function(property) {
     destObject.prototype[property] = Beacon.prototype[property];
