@@ -17,7 +17,7 @@ they are also doubly escaped.
   
 Examples:  
   + `cat frames.base64 | node print-frames.js`  
-  + `node airserv-ng/stream-frames.js 127.0.0.1:666 wlan1 400 | node print-frames.js`
+  + `node airserv-ng/air-stream.js 127.0.0.1:666 wlan1 400 | node print-frames.js`
 
 Usage filter-frames.js
 ---------------------------
@@ -26,7 +26,7 @@ according to a filter rule.
   
 Examples:  
   + `cat frames.base64 | node filter-frames.js <filter rule> | node print-frames.js`  
-  + `node airserv-ng/stream-frames.js 127.0.0.1:666 wlan1 400 | node filter-frames.js <filter rule> | node print-frames.js`
+  + `node airserv-ng/air-stream.js 127.0.0.1:666 wlan1 400 | node filter-frames.js <filter rule> | node print-frames.js`
 
 License
 ---------------------------

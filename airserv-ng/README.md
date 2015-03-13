@@ -41,13 +41,13 @@ commands:
   + \<channels\> a comma-separated list, range, or device name to pull channels from
   + \<interval\> number of milliseconds to wait before jumping to the next channel
 
-Usage stream-frames.js
+Usage air-stream.js
 ---------------------------
-Provides a newline separated stream of base64 encoded 80211 frames with radiotap headers to STDOU.
+Provides a newline separated stream of base64 encoded 80211 frames with radiotap headers to STDOUT.
 Accepts a newline separated stream of base64 encoded 80211 frames at STDIN to be transmitted by
 airserv-ng.  
   
-`node stream-frames.js <ip-address>:<port> <channels> <interval>`
+`node air-stream.js <ip-address>:<port> <channels> <interval>`
   + \<ip-address\> ip of the airserv-ng server (likely 127.0.0.1)
   + \<port\> port of the airserv-ng server (666 by default)
   + \<channels\> a comma-separated list, range, or device name to pull channels from

@@ -1,10 +1,14 @@
+var CODE_ERROR_USAGE   = 9001;
+var CODE_ERROR_AIRSERV = 9002;
+
+
 function handleShowUsage() {
-  process.stderr.write('node stream-frames.js <ip-address>:<port> <channels> <interval>\n');
+  process.stderr.write('node air-stream.js <ip-address>:<port> <channels> <interval>\n');
 }
 
 if (process.argv.length < 5|| process.argv[2].split(':').length != 2) {
   handleShowUsage();
-  process.exit(1);
+  process.exit(CODE_ERROR_USAGE);
 }
 
 var airserv_api = require('./airserv_api.js');
@@ -94,10 +98,9 @@ airservClient.connect(process.argv[2].split(':')[1], process.argv[2].split(':')[
     .pipe(airserv_api.splitResponses(handleStreamErrror))
     .pipe(decodeFrames())
     .pipe(process.stdout);
-
 });
 
 airservClient.on('end', function() {
   process.stderr.write('airserv-ng client disconnected\n');
-  process.exit(1);
+  process.exit(CODE_ERROR_AIRSERV);
 });
