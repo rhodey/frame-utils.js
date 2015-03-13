@@ -23,6 +23,7 @@ function printFrames() {
       try {
 
         this.emit('data', Buffer.concat([extrasBuffer, new Buffer(new CapturedFrame(frameBuffer).toString())]) + '\n');
+        //this.emit('data', frameBuffer.toString('hex') + '\n');
 
       } catch (err) {
         process.stderr.write('caught error in stream: ' + err.stack + '\n');

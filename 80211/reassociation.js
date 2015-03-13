@@ -1,14 +1,12 @@
-var InformationElement = require('./element').InformationElement;
-var element_id         = require('./element').element_id;
-var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
+var element = require('./element');
 
-// [capability:2] [listen interval:2] [current ap address:6] [ssid:IE] [supported rates:IE]
+// [capability:2] [listen interval:2] [current AP address:6] [SSID:IE] [supported rates:IE]
 function ReassociationRequest(data) {
   this.data = data;
 };
 
 ReassociationRequest.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(10));
+  this.elements = element.getElementArray(this.data.slice(10));
 }
 
 ReassociationRequest.prototype.getCapability = function() {
@@ -24,14 +22,14 @@ ReassociationRequest.prototype.getCurrentApAddress = function() {
 }
 
 ReassociationRequest.prototype.getSsid = function() {
-  if (this.elements[element_id.SSID] === undefined)
+  if (this.elements[element.element_id.SSID] === undefined)
     return '';
   else
-    return this.elements[element_id.SSID];
+    return this.elements[element.element_id.SSID];
 }
 
 ReassociationRequest.prototype.getSupportedRates = function() {
-  return this.elements[element_id.SUPPORTED_RATES];
+  return this.elements[element.element_id.SUPPORTED_RATES];
 }
 
 ReassociationRequest.prototype.toString = function() {
@@ -54,7 +52,7 @@ function ReassociationResponse(data) {
 };
 
 ReassociationResponse.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(6));
+  this.elements = element.getElementArray(this.data.slice(6));
 }
 
 ReassociationResponse.prototype.getCapability = function() {
@@ -70,7 +68,7 @@ ReassociationResponse.prototype.getAssociationId = function() {
 }
 
 ReassociationResponse.prototype.getSupportedRates = function() {
-  return this.elements[element_id.SUPPORTED_RATES];
+  return this.elements[element.element_id.SUPPORTED_RATES];
 }
 
 ReassociationResponse.prototype.toString = function() {

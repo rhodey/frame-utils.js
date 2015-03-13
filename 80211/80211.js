@@ -304,7 +304,7 @@ function getMacHeaderLength(data) {
   return 24;
 };
 
-// TODO check fcs
+// TODO check FCS
 function Frame(data) {
   var headerLength = getMacHeaderLength(data);
   if(data.length < (headerLength + 4))

@@ -1,14 +1,12 @@
-var InformationElement = require('./element').InformationElement;
-var element_id         = require('./element').element_id;
-var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
+var element = require('./element');
 
-// [capability:2] [listen interval:2] [ssid:IE] [supported rates:IE]
+// [capability:2] [listen interval:2] [SSID:IE] [supported rates:IE]
 function AssociationRequest(data) {
   this.data = data;
 };
 
 AssociationRequest.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(4));
+  this.elements = element.getElementArray(this.data.slice(4));
 }
 
 AssociationRequest.prototype.getCapability = function() {
@@ -20,14 +18,14 @@ AssociationRequest.prototype.getListenInterval = function() {
 }
 
 AssociationRequest.prototype.getSsid = function() {
-  if (this.elements[element_id.SSID] === undefined)
+  if (this.elements[element.element_id.SSID] === undefined)
     return '';
   else
-    return this.elements[element_id.SSID];
+    return this.elements[element.element_id.SSID];
 }
 
 AssociationRequest.prototype.getSupportedRates = function() {
-  return this.elements[element_id.SUPPORTED_RATES];
+  return this.elements[element.element_id.SUPPORTED_RATES];
 }
 
 AssociationRequest.prototype.toString = function() {
@@ -49,7 +47,7 @@ function AssociationResponse(data) {
 };
 
 AssociationResponse.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(6));
+  this.elements = element.getElementArray(this.data.slice(6));
 }
 
 AssociationResponse.prototype.getCapability = function() {
@@ -65,7 +63,7 @@ AssociationResponse.prototype.getAssociationId = function() {
 }
 
 AssociationResponse.prototype.getSupportedRates = function() {
-  return this.elements[element_id.SUPPORTED_RATES];
+  return this.elements[element.element_id.SUPPORTED_RATES];
 }
 
 AssociationResponse.prototype.toString = function() {

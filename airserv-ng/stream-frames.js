@@ -30,8 +30,8 @@ commandStream._read = function () {
   commandsAwaitingResponse.push(nextCommand);
   commandStream.push(nextCommand.getAsBuffer());
 };
-commandStream.queue = function (buffer) {
-  this.commandsAwaitingSend.push(buffer);
+commandStream.queue = function (command) {
+  this.commandsAwaitingSend.push(command);
   this._read();
 };
 

@@ -1,21 +1,43 @@
 /*
  * helper constants, functions, and documentation for 80211 fixed length fields.
- * 
+ *
  * units...
  *   TU - 1024us time units
- * 
+ *
  * fixed length management frame fields...
  *   auth alg number:2B      - identifies the type of auth used in the auth process.
  *   auth transaction seq:2B - tracks progress through the auth process, starts at 1 not 0.
  *   beacon interval:2B      - beacon transmission interval measured in TUs.
  *   capability:2B           - advertises the networks capabilities.
- *   current ap addr:6B      - used in association to help transfer buffered frames.
+ *     ESS:1b                - set to 1 if AP network.
+ *     IBSS:1b               - set to 1 if IBSS network.
+ *     CF pollable:1b        - see contention-free polling bits table...
+ *     CF poll request:1b    - see contention-free polling bits table...
+ *     privacy:1b            - set to 1 if WEP required.
+ *     short preamble:1b     - set to 1 if using short preamble in DSSS PHY.
+ *     PBCC:1b               - set to 1 if using packet binary convolution coding in DSSS PHY.
+ *     channel agility:1b    - set to 1 if using channel agility in DSSS PHY.
+ *   current AP addr:6B      - used in association to help transfer buffered frames.
  *   listen interval:2B      - number of beacon intervals a station waits before listening to beacon frames, used to save power by shutting down antenna.
  *   association id:2B       - id assigned by ap to assist with control and management frames.
  *   timestamp:8B            - number of microseconds timekeeper has been active, used for synchronization, wraps around to 0.
  *   reason code:2B          - used in disassociation & deauth frames to give explain reason.
  *   status code:2B          - indicates the success or failure of an operation.
- * 
+ *
+ * contention-free polling bits...
+ *   station...
+ *     [cf pollable] [cf poll req] [interpretation]
+ *           0            0         polling not supported
+ *           0            1         polling supported but not requested
+ *           1            0         polling supported and requested
+ *           1            1         polling supported but never wants to be polled
+ *   access point...
+ *     [cf pollable] [cf poll req] [interpretation]
+ *           0            0         PCF not implemented
+ *           0            1         PCF implemented but polling not supported
+ *           1            0         PCF implemented and polling supported
+ *           1            1         reserved / unused
+ *
  * base reason codes...
  *   0 - reserved / unused
  *   1 - unspecified
@@ -27,7 +49,7 @@
  *   7 - incorrect frame type or subtype from unassociated station
  *   8 - station has left service area, is disassociated
  *   9 - association or reassociation request before auth
- * 
+ *
  * base status codes...
  *   00 - success
  *   01 - unspecified failure
@@ -43,5 +65,10 @@
  *   19 - association denied, mobile does not support short preamble
  *   20 - association denied, mobile does not support PBCC modulation
  *   21 - association denied, mobile does not support channel agility
- * 
  */
+
+var SIMPLE_AP_CAPABILITY = new Buffer([0x80, 0x00]);
+//var SIMPLE_AP_CAPABILITY = new Buffer([0x04, 0x21]);
+
+
+exports.SIMPLE_AP_CAPABILITY = SIMPLE_AP_CAPABILITY;

@@ -1,5 +1,4 @@
-var InformationElement = require('./element').InformationElement;
-var element_id         = require('./element').element_id;
+var element = require('./element');
 
 // [algorithm:2] [transaction sequence:2] [status:2] [challenge:?]
 function Authentication(data) {
@@ -7,7 +6,7 @@ function Authentication(data) {
 };
 
 Authentication.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(6));
+  this.elements = element.getElementArray(this.data.slice(6));
 }
 
 Authentication.prototype.getAlgorithm = function() {
@@ -23,7 +22,7 @@ Authentication.prototype.getStatus = function() {
 }
 
 Authentication.prototype.getChallenge = function() {
-  return this.elements[element_id.CHALLEGE_TEXT];
+  return this.elements[element.element_id.CHALLEGE_TEXT];
 }
 
 Authentication.prototype.toString = function() {

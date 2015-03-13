@@ -1,14 +1,14 @@
 function handleShowUsage() {
-  process.stderr.write('node airserv-client-poc.js <ip-address>:<port> <command> <arguments>');
-  process.stderr.write('commands:\n'                      +
-                       '  listen <channels> <interval>\n' +
-                       '  get_chan\n'                     +
-                       '  set_chan <channel>\n'           +
-                       '  write <data>\n'                 +
-                       '  get_mac\n'                      +
-                       '  get_monitor\n'                  +
-                       '  get_rate\n'                     +
-                       '  set_rate <rate>\n');
+  process.stderr.write('node airserv-client-poc.js <ip-address>:<port> <command> <arguments>\n');
+  process.stderr.write('  commands:\n'                      +
+                       '    listen <channels> <interval>\n' +
+                       '    get_chan\n'                     +
+                       '    set_chan <channel>\n'           +
+                       '    write <data>\n'                 +
+                       '    get_mac\n'                      +
+                       '    get_monitor\n'                  +
+                       '    get_rate\n'                     +
+                       '    set_rate <rate>\n');
 }
 
 if (process.argv.length < 4 || process.argv[2].split(':').length != 2) {

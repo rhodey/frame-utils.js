@@ -1,25 +1,23 @@
-var InformationElement = require('./element').InformationElement;
-var element_id         = require('./element').element_id;
-var IE_HEADER_LENGTH   = InformationElement.HEADER_LENGTH;
+var element = require('./element');
 
-// [ssid:IE] [supported rates:IE]
+// [SSID:IE] [supported rates:IE]
 function ProbeRequest(data) {
   this.data = data;
 };
 
 ProbeRequest.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data);
+  this.elements = element.getElementArray(this.data);
 }
 
 ProbeRequest.prototype.getSsid = function() {
-  if (this.elements[element_id.SSID] === undefined)
+  if (this.elements[element.element_id.SSID] === undefined)
     return '';
   else
-    return this.elements[element_id.SSID];
+    return this.elements[element.element_id.SSID];
 }
 
 ProbeRequest.prototype.getSupportedRates = function() {
-  return this.elements[element_id.SUPPORTED_RATES];
+  return this.elements[element.element_id.SUPPORTED_RATES];
 }
 
 ProbeRequest.prototype.toString = function() {
@@ -35,7 +33,7 @@ ProbeRequest.mixin = function(destObject){
 
 
 /*
- * [timestamp:8] [between interval:2] [capability:2] [ssid:IE] [fh set:IE] [ds set:IE] [cf set:IE] [ibss set:IE]
+ * [timestamp:8] [between interval:2] [capability:2] [SSID:IE] [FH set:IE] [DS set:IE] [CF set:IE] [IBSS set:IE]
  *
  * FH   set only present when frequency-hopping is supported.
  * DS   set only present when direct sequence is supported.
@@ -49,7 +47,7 @@ function ProbeResponse(data) {
 };
 
 ProbeResponse.prototype.initElements = function() {
-  this.elements = InformationElement.getElementArray(this.data.slice(12));
+  this.elements = element.getElementArray(this.data.slice(12));
 }
 
 ProbeResponse.prototype.getTimeStamp = function() {
@@ -65,26 +63,26 @@ ProbeResponse.prototype.getCapability = function() {
 }
 
 ProbeResponse.prototype.getSsid = function() {
-  if (this.elements[element_id.SSID] === undefined)
+  if (this.elements[element.element_id.SSID] === undefined)
     return '';
   else
-    return this.elements[element_id.SSID];
+    return this.elements[element.element_id.SSID];
 }
 
 ProbeResponse.prototype.getFhSet = function() {
-  return this.elements[element_id.FH_SET];
+  return this.elements[element.element_id.FH_SET];
 }
 
 ProbeResponse.prototype.getDsSet = function() {
-  return this.elements[element_id.DS_SET];
+  return this.elements[element.element_id.DS_SET];
 }
 
 ProbeResponse.prototype.getCfSet = function() {
-  return this.elements[element_id.CF_SET];
+  return this.elements[element.element_id.CF_SET];
 }
 
 ProbeResponse.prototype.getIbssSet = function() {
-  return this.elements[element_id.IBSS_SET];
+  return this.elements[element.element_id.IBSS_SET];
 }
 
 ProbeResponse.prototype.toString = function() {
