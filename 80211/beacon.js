@@ -1,7 +1,6 @@
-var fields  = require('./fields');
-var element = require('./element');
-
-var DEFAULT_BEACON_INTERVAL_MS = 0x64;
+var fields    = require('./fields');
+var element   = require('./element');
+var MacHeader = require('./80211').MacHeader;
 
 /*
  * [timestamp:8] [beacon interval:2] [capability:2] [SSID:IE] [FH set:IE] [DS set:IE] [CF set:IE] [IBSS set:IE] [TIM:IE]
@@ -17,6 +16,8 @@ var DEFAULT_BEACON_INTERVAL_MS = 0x64;
 function Beacon(data) {
   this.data = data;
 };
+
+Beacon.DEFAULT_BEACON_INTERVAL_MS = 0x64;
 
 Beacon.prototype.initElements = function() {
   this.elements = element.getElementArray(this.data.slice(12));
@@ -62,41 +63,45 @@ Beacon.prototype.getTim = function() {
 }
 
 Beacon.prototype.toString = function() {
-  return 'b_timestamp:' + this.getTimeStamp().toString('hex') +
+  return 'b_timestamp:' + this.getTimeStamp().toString('hex')            +
+         ',b_interval:' + this.getBeaconInterval().toString('hex', 0, 1) +
          ',ssid:'       + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
 Beacon.mixin = function(destObject){
-  ['getTimeStamp', 'getBetweenInterval', 'getCapability', 'getSsid',
-   'getFhSet',     'getDsSet',           'getCfSet',      'getIbssSet',
-   'getTim',       'toString',           'initElements']
+  ['getTimeStamp', 'getBeaconInterval', 'getCapability', 'getSsid',
+   'getFhSet',     'getDsSet',          'getCfSet',      'getIbssSet',
+   'getTim',       'toString',          'initElements']
   .forEach(function(property) {
     destObject.prototype[property] = Beacon.prototype[property];
   });
 };
 
 // [frame control] [duration] [desination] [source addr] [bssid] [seq control]
-function getSimpleBeaconMacHeader(sourceAddr) {
+function getSimpleBeaconMacHeader(sourceAddr, seqNum) {
   var frameControl   = new Buffer([0x80, 0x00]);
   var duration       = new Buffer([0x00, 0x00]);
   var desinationAddr = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
-  var seqControl     = new Buffer([0x00, 0xDA]); // fragment num should be 0 but seq num should increment
+  var seqControl     = MacHeader.getSeqControl(0, seqNum);
 
   return Buffer.concat([frameControl, duration, desinationAddr, sourceAddr, sourceAddr, seqControl]);
 }
 
-Beacon.buildSimpleDs = function(sourceAddr, ssid, channel) {
-  var header         = getSimpleBeaconMacHeader(sourceAddr);
-  var timestamp      = new Buffer([0x77, 0x01, 0x29, 0x9B, 0x08, 0x00, 0x00, 0x00]);
-  var interval       = new Buffer([DEFAULT_BEACON_INTERVAL_MS, 0x00]);
-  var capability     = fields.SIMPLE_AP_CAPABILITY;
-  var ssidElement    = element.buildElement(element.element_id.SSID, ssid);
-  var dsSet          = element.buildElement(element.element_id.DS_SET, new Buffer(channel));
-  var supportedRates = new Buffer([0x01, 0x04, 0x02, 0x04, 0x0B, 0x16, 0x32, 0x08, 0x0C, 0x12, 0x18, 0x24, 0x30, 0x48, 0x60, 0x6C]);
+// ~header~ [timestamp] [interval] [capability] [ssid] [rates] [DS] [TIM]
+Beacon.buildSimpleDs = function(sourceAddr, seqNum, intervalTUs, ssid, channel) {
+  var header      = getSimpleBeaconMacHeader(sourceAddr, seqNum);
+  var timestamp   = new Buffer([0x77, 0x01, 0x29, 0x9B, 0x08, 0x00, 0x00, 0x00]);
+  var interval    = new Buffer([intervalTUs, 0x00]);
+  var ssidElement = element.buildElement(element.element_id.SSID,   ssid);
+  var dsSet       = element.buildElement(element.element_id.DS_SET, new Buffer([channel]));
 
-  return new Beacon(Buffer.concat([header, timestamp, interval, capability, ssidElement.data, dsSet.data, supportedRates]));
+  return new Beacon(Buffer.concat([
+    header,                      timestamp,                         interval,                      fields.SIMPLE_AP_CAPABILITY,
+    ssidElement.data,            element.SIMPLE_RATES.data,         dsSet.data,                    element.SIMPLE_TIM.data,
+    element.SIMPLE_COUNTRY.data, element.SIMPLE_RSN.data,           element.SIMPLE_EXT_RATES.data, element.SIMPLE_HT_CAPABILITY.data,
+    element.SIMPLE_HT_INFO.data, element.SIMPLE_EXT_CAPABILITY.data
+  ]));
 }
 
 
-exports.Beacon                     = Beacon;
-exports.DEFAULT_BEACON_INTERVAL_MS = DEFAULT_BEACON_INTERVAL_MS;
+exports.Beacon = Beacon;

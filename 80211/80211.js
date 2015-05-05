@@ -99,6 +99,14 @@ function MacHeader(data) {
     throw new Error('mac header must be at least 30 bytes in length, is ' + data.length);
 };
 
+// [sequence number:12] [fragment:4]
+MacHeader.getSeqControl = function(fragment, seqNum) {
+  var fragmentBits = (0x000F & fragment);
+  var seqNumBits   = (0x0FFF & seqNum) << 4;
+  var seqControl   = util.getBufferedUInt16((seqNumBits | fragmentBits));
+  return new Buffer([seqControl[1], seqControl[0]]);
+}
+
 MacHeader.prototype.getProtocolVersion = function() {
   return this.data[0] & 0xC0;
 }
@@ -323,10 +331,13 @@ function Frame(data) {
     this.body.initElements();
 };
 
+Frame.getTUsForMilliseconds = function(milliseconds) {
+  return milliseconds; /*Math.ceil((milliseconds * 1000) / 1024);*/
+}
+
 Frame.prototype.toString = function() {
   return this.header.toString() + ',' + this.body.toString() + ',fcs:' + this.fcs.toString('hex');
 }
-
 
 exports.mac_header = mac_header;
 exports.MacHeader  = MacHeader;

@@ -1,4 +1,5 @@
-var element = require('./element');
+var element   = require('./element');
+var MacHeader = require('./80211').MacHeader;
 
 // [SSID:IE] [supported rates:IE]
 function ProbeRequest(data) {
@@ -30,6 +31,26 @@ ProbeRequest.mixin = function(destObject){
     destObject.prototype[property] = ProbeRequest.prototype[property];
   });
 };
+
+// [frame control] [duration] [desination] [source addr] [bssid] [seq control]
+function getProbeRequestMacHeader(sourceAddr, seqNum) {
+  var frameControl   = new Buffer([0x40, 0x00]);
+  var duration       = new Buffer([0x00, 0x00]);
+  var desinationAddr = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+  var seqControl     = MacHeader.getSeqControl(0, seqNum);
+
+  return Buffer.concat([frameControl, duration, desinationAddr, sourceAddr, desinationAddr, seqControl]);
+}
+
+// ~header~ [ssid] [rates]
+ProbeRequest.build = function(sourceAddr, seqNum, ssid, channel) {
+  var header         = getProbeRequestMacHeader(sourceAddr, seqNum);
+  var ssidElement    = element.buildElement(element.element_id.SSID,   ssid);
+  var supportedRates = new Buffer([0x01, 0x04, 0x02, 0x04, 0x0B, 0x16]);
+  var dsSet          = element.buildElement(element.element_id.DS_SET, new Buffer([channel]));
+
+  return new ProbeRequest(Buffer.concat([header, ssidElement.data, supportedRates, dsSet.data]));
+}
 
 
 /*

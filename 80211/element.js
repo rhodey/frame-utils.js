@@ -46,9 +46,12 @@ var element_id = {
   QUIET                       : 0X28,
   IBSS_DFS                    : 0X28,
   ERP_INFO                    : 0X29,
-  ROBUST_SECURITY_NET         : 0X30,
+  HT_CAPABILITIES             : 0x2D,
+  RSN                         : 0X30,
   EXTENDED_SUPPORTED_RATES    : 0X32,
-  WIFI_PROTECTED_ACCESS       : 0XDD
+  HT_INFO                     : 0x3D,
+  WIFI_PROTECTED_ACCESS       : 0XDD,
+  EXTENDED_CAPABILITIES       : 0x7F
 };
 
 function InformationElement(data) {
@@ -114,6 +117,25 @@ function buildElement(id, data) {
   );
 }
 
+
+var SIMPLE_RATES          = buildElement(element_id.SUPPORTED_RATES,          new Buffer([0x82, 0x84, 0x8B, 0x96, 0x24, 0x30, 0x48, 0x6C]));
+var SIMPLE_TIM            = buildElement(element_id.TIM,                      new Buffer([0x00, 0x01, 0x00, 0x00]));
+var SIMPLE_COUNTRY        = buildElement(element_id.COUNTRY,                  new Buffer([0x55, 0x53, 0x20, 0x01, 0x0B, 0x1E]));
+var SIMPLE_RSN            = buildElement(element_id.RSN,                      new Buffer([0x01, 0x00, 0x00, 0x0f, 0xac, 0x04, 0x01, 0x00, 0x00, 0x0f, 0xac, 0x04, 0x01, 0x00, 0x00, 0x0f, 0xac, 0x02, 0x00, 0x00]));
+var SIMPLE_EXT_RATES      = buildElement(element_id.EXTENDED_SUPPORTED_RATES, new Buffer([0x0C, 0x12, 0x18, 0x60]));
+var SIMPLE_HT_CAPABILITY  = buildElement(element_id.HT_CAPABILITIES,          new Buffer([0x1c, 0x18, 0x1b, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
+var SIMPLE_HT_INFO        = buildElement(element_id.HT_INFO,                  new Buffer([0x04, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
+var SIMPLE_EXT_CAPABILITY = buildElement(element_id.EXTENDED_CAPABILITIES,    new Buffer([0x01]));
+
+
+exports.SIMPLE_RATES          = SIMPLE_RATES;
+exports.SIMPLE_TIM            = SIMPLE_TIM;
+exports.SIMPLE_COUNTRY        = SIMPLE_COUNTRY;
+exports.SIMPLE_RSN            = SIMPLE_RSN;
+exports.SIMPLE_EXT_RATES      = SIMPLE_EXT_RATES;
+exports.SIMPLE_HT_CAPABILITY  = SIMPLE_HT_CAPABILITY;
+exports.SIMPLE_HT_INFO        = SIMPLE_HT_INFO;
+exports.SIMPLE_EXT_CAPABILITY = SIMPLE_EXT_CAPABILITY;
 
 exports.element_id         = element_id;
 exports.InformationElement = InformationElement;

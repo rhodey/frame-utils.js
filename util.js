@@ -1,5 +1,14 @@
 var exec = require('child_process').exec;
 
+function getBufferedUInt16(unsignedInt) {
+  var uInt16 = new Buffer(2);
+
+  uInt16[0] = (unsignedInt & 0xFF00) >> 8;
+  uInt16[1] = (unsignedInt & 0x00FF) >> 0;
+
+  return uInt16;
+}
+
 function getBufferedUInt32(unsignedInt) {
   var uInt32 = new Buffer(4);
 
@@ -133,6 +142,7 @@ function getChannelSpaceForArg(arg, cb) {
 }
 
 
+exports.getBufferedUInt16        = getBufferedUInt16;
 exports.getBufferedUInt32        = getBufferedUInt32;
 exports.getUInt32FromBuffer      = getUInt32FromBuffer;
 exports.getUInt64FromBuffer      = getUInt64FromBuffer;

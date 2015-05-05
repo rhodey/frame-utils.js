@@ -6,7 +6,7 @@ function handleShowUsage() {
   process.stderr.write('node air-stream.js <ip-address>:<port> <channels> <interval>\n');
 }
 
-if (process.argv.length < 5|| process.argv[2].split(':').length != 2) {
+if (process.argv.length < 5 || process.argv[2].split(':').length != 2) {
   handleShowUsage();
   process.exit(CODE_ERROR_USAGE);
 }

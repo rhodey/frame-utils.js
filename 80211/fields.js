@@ -68,7 +68,6 @@
  */
 
 var SIMPLE_AP_CAPABILITY = new Buffer([0x80, 0x00]);
-//var SIMPLE_AP_CAPABILITY = new Buffer([0x04, 0x21]);
 
 
 exports.SIMPLE_AP_CAPABILITY = SIMPLE_AP_CAPABILITY;
