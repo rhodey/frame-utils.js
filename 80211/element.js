@@ -101,7 +101,6 @@ function buildElementArray(data, start, elements) {
   }
 }
 
-// assumes that data contains only information elements
 function getElementArray(data) {
   var elements = new Array();
   if (data.length < 3)

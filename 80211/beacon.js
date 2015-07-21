@@ -88,18 +88,15 @@ function getSimpleBeaconMacHeader(sourceAddr, seqNum) {
 }
 
 // ~header~ [timestamp] [interval] [capability] [ssid] [rates] [DS] [TIM]
-Beacon.buildSimpleDs = function(sourceAddr, seqNum, intervalTUs, ssid, channel) {
+Beacon.buildSimpleDs = function(sourceAddr, seqNum, timestamp, intervalTUs, ssid, channel) {
   var header      = getSimpleBeaconMacHeader(sourceAddr, seqNum);
-  var timestamp   = new Buffer([0x77, 0x01, 0x29, 0x9B, 0x08, 0x00, 0x00, 0x00]);
   var interval    = new Buffer([intervalTUs, 0x00]);
   var ssidElement = element.buildElement(element.element_id.SSID,   ssid);
   var dsSet       = element.buildElement(element.element_id.DS_SET, new Buffer([channel]));
 
   return new Beacon(Buffer.concat([
-    header,                      timestamp,                         interval,                      fields.SIMPLE_AP_CAPABILITY,
-    ssidElement.data,            element.SIMPLE_RATES.data,         dsSet.data,                    element.SIMPLE_TIM.data,
-    element.SIMPLE_COUNTRY.data, element.SIMPLE_RSN.data,           element.SIMPLE_EXT_RATES.data, element.SIMPLE_HT_CAPABILITY.data,
-    element.SIMPLE_HT_INFO.data, element.SIMPLE_EXT_CAPABILITY.data
+    header,           timestamp,                 interval,   fields.SIMPLE_AP_CAPABILITY,
+    ssidElement.data, element.SIMPLE_RATES.data, dsSet.data, element.SIMPLE_TIM.data
   ]));
 }
 

@@ -20,6 +20,21 @@ function getBufferedUInt32(unsignedInt) {
   return uInt32;
 }
 
+function getReverseBufferedUInt64(unsignedInt) {
+  var uInt64 = new Buffer(8);
+
+  uInt64[7] = (unsignedInt & 0xFF00000000000000) >> 56;
+  uInt64[6] = (unsignedInt & 0x00FF000000000000) >> 48;
+  uInt64[5] = (unsignedInt & 0x0000FF0000000000) >> 40;
+  uInt64[4] = (unsignedInt & 0x000000FF00000000) >> 32;
+  uInt64[3] = (unsignedInt & 0x00000000FF000000) >> 24;
+  uInt64[2] = (unsignedInt & 0x0000000000FF0000) >> 16;
+  uInt64[1] = (unsignedInt & 0x000000000000FF00) >>  8;
+  uInt64[0] = (unsignedInt & 0x00000000000000FF) >>  0;
+
+  return uInt64;
+}
+
 function getUInt32FromBuffer(bufferedUInt32) {
   var uInt = 0x00000000;
 
@@ -144,6 +159,7 @@ function getChannelSpaceForArg(arg, cb) {
 
 exports.getBufferedUInt16        = getBufferedUInt16;
 exports.getBufferedUInt32        = getBufferedUInt32;
+exports.getReverseBufferedUInt64 = getReverseBufferedUInt64;
 exports.getUInt32FromBuffer      = getUInt32FromBuffer;
 exports.getUInt64FromBuffer      = getUInt64FromBuffer;
 exports.getIntFromTwosByte       = getIntFromTwosByte;

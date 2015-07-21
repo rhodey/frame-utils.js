@@ -25,7 +25,6 @@ ProbeRequest.prototype.toString = function() {
   return 'ssid:' + this.getSsid().toString().replace(/,/g, '\\,');
 }
 
-// TODO: check here if this.data is of acceptable length
 ProbeRequest.mixin = function(destObject){
   ['getSsid', 'getSupportedRates', 'toString', 'initElements'].forEach(function(property) {
     destObject.prototype[property] = ProbeRequest.prototype[property];
@@ -46,7 +45,7 @@ function getProbeRequestMacHeader(sourceAddr, seqNum) {
 ProbeRequest.build = function(sourceAddr, seqNum, ssid, channel) {
   var header         = getProbeRequestMacHeader(sourceAddr, seqNum);
   var ssidElement    = element.buildElement(element.element_id.SSID,   ssid);
-  var supportedRates = new Buffer([0x01, 0x04, 0x02, 0x04, 0x0B, 0x16]);
+  var supportedRates = new Buffer([0x01, 0x04, 0x02, 0x04, 0x0B, 0x16]); // TODO: use something from elements.js
   var dsSet          = element.buildElement(element.element_id.DS_SET, new Buffer([channel]));
 
   return new ProbeRequest(Buffer.concat([header, ssidElement.data, supportedRates, dsSet.data]));

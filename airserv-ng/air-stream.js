@@ -87,9 +87,9 @@ airservClient.connect(process.argv[2].split(':')[1], process.argv[2].split(':')[
 
    process.stdin.pipe(split())
     .pipe(through(
-      function write(response) {
+      function write(data) {
         commandStream.queue(
-          new airserv_api.Command(airserv_api.commands.WRITE, new Buffer(response, 'base64'))
+          new airserv_api.Command(airserv_api.commands.WRITE, new Buffer(data, 'base64'))
         );
       }
     ))
